@@ -8,7 +8,8 @@ public class GridDataEditor : Editor
     {
         if(GUILayout.Button("Generate Grid Data"))
         {
-            (target as GridData).GenerateGridData(); 
+            (target as GridData).GenerateGridData();
+            serializedObject.ApplyModifiedProperties(); 
         }
 
         if(GUILayout.Button("Find Path"))
