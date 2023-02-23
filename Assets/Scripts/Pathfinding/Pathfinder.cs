@@ -38,23 +38,6 @@ public static class Pathfinder
         }
         return _bestIndex;
     }
-
-    private static int GetBestCellIndex(Cell[] _frontier, Cell _startCell, Cell _endCell)
-    {
-        float _bestHeuristic = int.MaxValue;
-        float _currentHeuristic = _bestHeuristic; 
-        int _bestIndex = -1; 
-        for (int i = 0; i < _frontier.Length; i++)
-        {
-            _currentHeuristic = _frontier[i].GetHeuristicCost(_endCell.Position, _startCell.Position); 
-            if(_currentHeuristic < _bestHeuristic)
-            {
-                _bestHeuristic = _currentHeuristic;
-                _bestIndex = i; 
-            }
-        }
-        return _bestIndex; 
-    }
     #endregion 
 
 
@@ -296,7 +279,7 @@ public static class Pathfinder
         int _currentStep = 0, _bestIndex = 0;
         while (_frontier.Count > 0 && _currentStep != _step)
         {
-            _bestIndex = GetBestCellIndex(_frontier.ToArray(), _startCell, _endCell);
+            _bestIndex = GetBestCellIndex(_frontier.ToArray(), _endCell);
             _currentCell = _frontier[_bestIndex];
             _map.SetTile(_currentCell.Position, _frontierTile);
 
@@ -351,7 +334,7 @@ public static class Pathfinder
         int _currentStep = 0, _bestIndex = 0;
         while (_frontier.Count > 0 && _currentStep != _step)
         {
-            _bestIndex = GetBestCellIndex(_frontier.ToArray(), _startCell, _endCell);
+            _bestIndex = GetBestCellIndex(_frontier.ToArray(), _endCell);
             _currentCell = _frontier[_bestIndex];
             _map.SetTile(_currentCell.Position, _frontierTile);
             yield return null;
@@ -366,6 +349,7 @@ public static class Pathfinder
                 (_neighbourCell = _cells[_currentCell.IndexX - 1, _currentCell.IndexY]).Cost < int.MaxValue &&
                 !_cameFrom.ContainsKey(_neighbourCell))
             {
+                _neighbourCell.HeuristicCostFromStart = _currentCell.HeuristicCostFromStart + 1; 
                 _frontier.Add(_neighbourCell);
                 _cameFrom.Add(_neighbourCell, _currentCell);
             }
@@ -374,6 +358,7 @@ public static class Pathfinder
                 (_neighbourCell = _cells[_currentCell.IndexX + 1, _currentCell.IndexY]).Cost < int.MaxValue &&
                 !_cameFrom.ContainsKey(_neighbourCell))
             {
+                _neighbourCell.HeuristicCostFromStart = _currentCell.HeuristicCostFromStart + 1;
                 _frontier.Add(_neighbourCell);
                 _cameFrom.Add(_neighbourCell, _currentCell);
             }
@@ -382,6 +367,7 @@ public static class Pathfinder
                 (_neighbourCell = _cells[_currentCell.IndexX, _currentCell.IndexY - 1]).Cost < int.MaxValue &&
                 !_cameFrom.ContainsKey(_neighbourCell))
             {
+                _neighbourCell.HeuristicCostFromStart = _currentCell.HeuristicCostFromStart + 1;
                 _frontier.Add(_neighbourCell);
                 _cameFrom.Add(_neighbourCell, _currentCell);
             }
@@ -390,6 +376,7 @@ public static class Pathfinder
                 (_neighbourCell = _cells[_currentCell.IndexX, _currentCell.IndexY + 1]).Cost < int.MaxValue &&
                 !_cameFrom.ContainsKey(_neighbourCell))
             {
+                _neighbourCell.HeuristicCostFromStart = _currentCell.HeuristicCostFromStart + 1;
                 _frontier.Add(_neighbourCell);
                 _cameFrom.Add(_neighbourCell, _currentCell);
             }

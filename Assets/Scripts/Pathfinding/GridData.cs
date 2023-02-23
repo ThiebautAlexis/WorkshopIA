@@ -93,14 +93,15 @@ public class Cell
     public int IndexX, IndexY; 
     public Vector3Int Position;
     public int Cost = 1;
+    public float HeuristicCostFromStart = 0;
 
     public float GetHeuristicCost(Vector3Int end)
     {
         return Vector3Int.Distance(Position, end) + Cost; 
     }
 
-    public float GetHeuristicCost(Vector3Int _end, Vector3Int _start)
-    {
-        return Vector3Int.Distance(Position, _end) + Vector3Int.Distance(Position, _start) + Cost;
-    }
+    //public float GetHeuristicCost(Vector3Int _end, Vector3Int _start)
+    //{
+    //    return Vector3Int.Distance(Position, _end) + HeuristicCostFromStart + Cost;
+    //}
 }
