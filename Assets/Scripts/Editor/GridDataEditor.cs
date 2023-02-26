@@ -14,7 +14,7 @@ public class GridDataEditor : Editor
 
         if(GUILayout.Button("Find Path"))
         {
-            (target as GridData).FindPath();
+            (target as GridData).DebugPath();
         }
         base.OnInspectorGUI();
     }

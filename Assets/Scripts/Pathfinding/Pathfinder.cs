@@ -22,6 +22,20 @@ public static class Pathfinder
         return _path.ToArray(); 
     }
 
+    private static Cell[] BuildPath(Cell _startCell, Cell _endCell, Dictionary<Cell, Cell> _cameFrom)
+    {
+        List<Cell> _path = new List<Cell> { _endCell };
+        Cell _currentCell = _endCell;
+        while (_currentCell != _startCell)
+        {
+            _currentCell = _cameFrom[_currentCell];
+            _path.Add(_currentCell);
+        }
+        _path.Reverse();
+
+        return _path.ToArray();
+    }
+
     private static int GetBestCellIndex(Cell[] _frontier, Cell _endCell)
     {
         float _bestHeuristic = int.MaxValue;
@@ -42,21 +56,19 @@ public static class Pathfinder
 
 
     #region BFS
-    public static Cell[] FindBFSPath(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
+    public static Cell[] FindBFSPath(Cell _startCell, Cell _endCell, Cell[,] _cells)
     {
         Dictionary<Cell, Cell> _cameFrom = new Dictionary<Cell, Cell>();
         List<Cell> _frontier = new List<Cell>{ _startCell };
         Cell _currentCell = null;
         Cell _neighbourCell = null;
         int _currentStep = 0; 
-        while (_frontier.Count > 0 && _currentStep != _step)
+        while (_frontier.Count > 0)
         {
             _currentCell = _frontier[0];
-            _map.SetTile(_currentCell.Position, _frontierTile);
 
             if (_currentCell == _endCell)
             {
-                return BuildPath(_startCell, _endCell, _cameFrom, _map, _pathTile); 
             }
             
             if (_currentCell.IndexX > 0 && 
@@ -93,7 +105,7 @@ public static class Pathfinder
             _currentStep++;
             _frontier.RemoveAt(0); 
         }
-        return BuildPath(_startCell, _currentCell, _cameFrom, _map, _pathTile);
+        return new Cell[0];
     }
 
     public static IEnumerator DebugBreadthFirstSearch(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
@@ -155,22 +167,21 @@ public static class Pathfinder
     #endregion
 
     #region Djikstra 
-    public static Cell[] FindDjikstraPath(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
+    public static Cell[] FindDjikstraPath(Cell _startCell, Cell _endCell, Cell[,] _cells)
     {
         Dictionary<Cell, Cell> _cameFrom = new Dictionary<Cell, Cell>();
         List<Cell> _frontier = new List<Cell> { _startCell };
         Cell _currentCell = null;
         Cell _neighbourCell = null;
         int _currentStep = 0, _bestIndex = 0;
-        while (_frontier.Count > 0 && _currentStep != _step)
+        while (_frontier.Count > 0)
         {
             _bestIndex = GetBestCellIndex(_frontier.ToArray(), _endCell); 
             _currentCell = _frontier[_bestIndex];
-            _map.SetTile(_currentCell.Position, _frontierTile);
 
             if (_currentCell == _endCell)
             {
-                return BuildPath(_startCell, _endCell, _cameFrom, _map, _pathTile);
+                return BuildPath(_startCell, _endCell, _cameFrom);
             }
 
             if (_currentCell.IndexX > 0 &&
@@ -207,7 +218,8 @@ public static class Pathfinder
             _currentStep++;
             _frontier.RemoveAt(_bestIndex);
         }
-        return BuildPath(_startCell, _currentCell, _cameFrom, _map, _pathTile);
+
+        return new Cell[0];
     }
 
     public static IEnumerator DebugDjikstra(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
@@ -270,22 +282,21 @@ public static class Pathfinder
     #endregion
 
     #region AStar
-    public static Cell[] FindAStarPath(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
+    public static Cell[] FindAStarPath(Cell _startCell, Cell _endCell, Cell[,] _cells)
     {
         Dictionary<Cell, Cell> _cameFrom = new Dictionary<Cell, Cell>();
         List<Cell> _frontier = new List<Cell> { _startCell };
         Cell _currentCell = null;
         Cell _neighbourCell = null;
         int _currentStep = 0, _bestIndex = 0;
-        while (_frontier.Count > 0 && _currentStep != _step)
+        while (_frontier.Count > 0)
         {
             _bestIndex = GetBestCellIndex(_frontier.ToArray(), _endCell);
             _currentCell = _frontier[_bestIndex];
-            _map.SetTile(_currentCell.Position, _frontierTile);
 
             if (_currentCell == _endCell)
             {
-                return BuildPath(_startCell, _endCell, _cameFrom, _map, _pathTile);
+                return BuildPath(_startCell, _endCell, _cameFrom);
             }
 
             if (_currentCell.IndexX > 0 &&
@@ -322,7 +333,8 @@ public static class Pathfinder
             _currentStep++;
             _frontier.RemoveAt(_bestIndex);
         }
-        return BuildPath(_startCell, _currentCell, _cameFrom, _map, _pathTile);
+
+        return new Cell[0];
     }
 
     public static IEnumerator DebugAstar(Cell _startCell, Cell _endCell, Cell[,] _cells, Tilemap _map, Tile _frontierTile, Tile _cameFromTile, Tile _pathTile, int _step = -1)
